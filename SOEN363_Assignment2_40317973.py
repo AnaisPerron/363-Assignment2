@@ -138,7 +138,9 @@ spending = spending.rename(columns={"revenue": "total_spending"})
 
 
 #1. List equipment id and equipment name for equipment with daily rate greater than CAD 40.
-
+print("\nQ1. Equipment with daily rate greater than CAD 40")
+q1 = eq[eq["daily_rate"] > 40][["equipment_id", "equipment_name"]]
+print(q1.sort_values("equipment_id"))
 
 #2. Display member id and member name for members whose city is Montreal.
 
