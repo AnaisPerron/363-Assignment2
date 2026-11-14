@@ -32,6 +32,8 @@ eq = equip_df.copy()
 mem = memb_df.copy()
 ren = rent_df.copy()
 
+print("Initial rows:       Equipment =", len(eq), "| Members =", len(mem), "| Rentals =", len(ren))
+
 #1. Remove rows with any missing value. All columns are required for this exercise.
 e, m, r = len(eq), len(mem), len(ren)
 eq = eq.dropna()
