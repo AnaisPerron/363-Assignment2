@@ -139,13 +139,13 @@ spending = spending.rename(columns={"revenue": "total_spending"})
 
 #1. List equipment id and equipment name for equipment with daily rate greater than CAD 40.
 print("\nQ1. Equipment with daily rate greater than CAD 40")
-q1 = eq[eq["daily_rate"] > 40][["equipment_id", "equipment_name"]] # filter, keep 2 columns
-print(q1.sort_values("equipment_id")) # sort by id
+expensive_equipment = eq[eq["daily_rate"] > 40][["equipment_id", "equipment_name"]] # filter, keep 2 columns
+print(expensive_equipment.sort_values("equipment_id")) # sort by id
 
 #2. Display member id and member name for members whose city is Montreal.
 print("\nQ2. Members whose city is Montreal")
-q2 = mem[mem["city"] == "Montreal"][["member_id", "member_name"]] # filter by city
-print(q2.sort_values("member_id").rename_axis("row"))  # sort by id
+montreal_members = mem[mem["city"] == "Montreal"][["member_id", "member_name"]] # filter by city
+print(montreal_members.sort_values("member_id").rename_axis("row"))  # sort by id
 
 #3. Count the total number of members in the cleaned members table, including members with no rentals.
 print("\nQ3. Total number of members")
@@ -161,24 +161,31 @@ print(f"{eq['daily_rate'].mean():.2f}") # mean, rounded to 2 decimals
 
 #6. Find the equipment item(s) with the highest daily rate. Display equipment id, equipment name, and daily rate.
 print("\nQ6. Equipment with the highest daily rate")
-q6 = eq[eq["daily_rate"] == eq["daily_rate"].max()] # all rows equal to the max
-print(q6[["equipment_id", "equipment_name", "daily_rate"]].sort_values("equipment_id").rename_axis("row"))
+top_rate_equipment = eq[eq["daily_rate"] == eq["daily_rate"].max()] # all rows equal to the max
+print(top_rate_equipment[["equipment_id", "equipment_name", "daily_rate"]].sort_values("equipment_id").rename_axis("row"))
 
 #7. Count equipment items in each category, including equipment that has never been rented. Display category and equipment count.
 print("\nQ7. Equipment count per category")
-q7 = eq.groupby("category")["equipment_id"].count().reset_index() # group equipment, not rentals
-print(q7.rename(columns={"equipment_id": "equipment_count"}).rename_axis("row"))
+category_counts = eq.groupby("category")["equipment_id"].count().reset_index() # group equipment, not rentals
+print(category_counts.rename(columns={"equipment_id": "equipment_count"}).rename_axis("row"))
 
 #8. Count rental id values for rentals starting strictly after September 15, 2026.
-
+print("\nQ8. Rentals starting after September 15, 2026")
+print(ren[ren["rental_date"] > "2026-09-15"]["rental_id"].count())  # strictly after
 
 #9. Calculate total rental revenue for rentals with rental days greater than 3.
 
+print("\nQ9. Total revenue for rentals with more than 3 rental days")
+print(f"{full[full['rental_days'] > 3]['revenue'].sum():.2f}")  # filter, then sum revenue
 
 #10. Find Halifax members who rented at least 4 units in a single rental. Display member id and member name.
 
+print("\nQ10. Halifax members who rented at least 4 units in one rental")
+halifax_big_renters = full[(full["city"] == "Halifax") & (full["quantity"] >= 4)]  # both conditions
+print(halifax_big_renters[["member_id", "member_name"]].drop_duplicates().sort_values("member_id").rename_axis("row"))
 
 #11. Find Montreal members with at least one rental starting in September 2026. Displaymember id and member name.
+
 
 
 #12. Find Ottawa members with more than two rental transactions. Display member id,member name, and rental count.
