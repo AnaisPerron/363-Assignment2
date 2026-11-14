@@ -198,10 +198,16 @@ ottawa_rental_counts = ottawa_rental_counts.rename(columns={"rental_id": "rental
 print(ottawa_rental_counts[ottawa_rental_counts["rental_count"] > 2].sort_values("member_id").rename_axis("row"))  # keep counts > 2
 
 #13. Find the top three equipment items by total units rented, using sum(quantity), not number of transactions. Display equipment id, equipment name, and total units. Return exactly three rows using equipment id ascending to break ties.
-
+print("\nQ13. Top three equipment items by total units rented")
+units_per_equipment = full.groupby(["equipment_id", "equipment_name"])["quantity"].sum().reset_index()  # units per item
+units_per_equipment = units_per_equipment.rename(columns={"quantity": "total_units"})
+print(units_per_equipment.sort_values(["total_units", "equipment_id"], ascending=[False, True]).head(3).rename_axis("row"))
 
 #14. Find the member(s) with the highest total rental spending. Display member id, member name, and total spending.
-
+print("\nQ14. Member(s) with the highest total spending")
+top_spenders = spending[spending["total_spending"] == spending["total_spending"].max()]  # all rows equal to the max
+top_spenders = top_spenders[["member_id", "member_name", "total_spending"]].sort_values("member_id")
+print(top_spenders.rename_axis("row"))
 
 #15. Find the city or cities with the largest number of rental transactions. Display city and rental count; use the member’s city.
 
