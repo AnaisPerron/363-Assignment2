@@ -185,11 +185,17 @@ halifax_big_renters = full[(full["city"] == "Halifax") & (full["quantity"] >= 4)
 print(halifax_big_renters[["member_id", "member_name"]].drop_duplicates().sort_values("member_id").rename_axis("row"))
 
 #11. Find Montreal members with at least one rental starting in September 2026. Displaymember id and member name.
-
+print("\nQ11. Montreal members with a rental in September 2026")
+montreal_sept_members = full[(full["city"] == "Montreal")
+           & (full["rental_date"] >= "2026-09-01") & (full["rental_date"] <= "2026-09-30")]  # date range
+print(montreal_sept_members[["member_id", "member_name"]].drop_duplicates().sort_values("member_id").rename_axis("row"))
 
 
 #12. Find Ottawa members with more than two rental transactions. Display member id,member name, and rental count.
-
+print("\nQ12. Ottawa members with more than two rentals")
+ottawa_rental_counts = full[full["city"] == "Ottawa"].groupby(["member_id", "member_name"])["rental_id"].count().reset_index()
+ottawa_rental_counts = ottawa_rental_counts.rename(columns={"rental_id": "rental_count"})
+print(ottawa_rental_counts[ottawa_rental_counts["rental_count"] > 2].sort_values("member_id").rename_axis("row"))  # keep counts > 2
 
 #13. Find the top three equipment items by total units rented, using sum(quantity), not number of transactions. Display equipment id, equipment name, and total units. Return exactly three rows using equipment id ascending to break ties.
 
