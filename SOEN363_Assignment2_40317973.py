@@ -130,7 +130,7 @@ pd.set_option("display.float_format", "{:.2f}".format)
 # Shared joined table: each rental with its member and equipment details
 full = pd.merge(ren, mem, on="member_id", how="inner")
 full = pd.merge(full, eq, on="equipment_id", how="inner")
-full["revenue"] = full["quantity"] * full["rental_days"] * full["daily_rate"]
+full["revenue"] = full["quantity"] * full["rental_days"] * full["daily_rate"] # revenue per rental
 
 # Total spending per member (only members with rentals)
 spending = full.groupby(["member_id", "member_name", "city"])["revenue"].sum().reset_index()
@@ -139,34 +139,34 @@ spending = spending.rename(columns={"revenue": "total_spending"})
 
 #1. List equipment id and equipment name for equipment with daily rate greater than CAD 40.
 print("\nQ1. Equipment with daily rate greater than CAD 40")
-q1 = eq[eq["daily_rate"] > 40][["equipment_id", "equipment_name"]]
-print(q1.sort_values("equipment_id"))
+q1 = eq[eq["daily_rate"] > 40][["equipment_id", "equipment_name"]] # filter, keep 2 columns
+print(q1.sort_values("equipment_id")) # sort by id
 
 #2. Display member id and member name for members whose city is Montreal.
 print("\nQ2. Members whose city is Montreal")
-q2 = mem[mem["city"] == "Montreal"][["member_id", "member_name"]]
-print(q2.sort_values("member_id").rename_axis("row"))
+q2 = mem[mem["city"] == "Montreal"][["member_id", "member_name"]] # filter by city
+print(q2.sort_values("member_id").rename_axis("row"))  # sort by id
 
 #3. Count the total number of members in the cleaned members table, including members with no rentals.
 print("\nQ3. Total number of members")
-print(mem["member_id"].count())
+print(mem["member_id"].count())  # count rows of the members table
 
 #4. Count the rental id values for rentals with quantity greater than 5.
 print("\nQ4. Rentals with quantity greater than 5")
-print(ren[ren["quantity"] > 5]["rental_id"].count())
+print(ren[ren["quantity"] > 5]["rental_id"].count()) # filter, then count ids
 
 #5. Calculate the average daily rate across all cleaned equipment records.
 print("\nQ5. Average daily rate")
-print(f"{eq['daily_rate'].mean():.2f}")
+print(f"{eq['daily_rate'].mean():.2f}") # mean, rounded to 2 decimals
 
 #6. Find the equipment item(s) with the highest daily rate. Display equipment id, equipment name, and daily rate.
 print("\nQ6. Equipment with the highest daily rate")
-q6 = eq[eq["daily_rate"] == eq["daily_rate"].max()]
+q6 = eq[eq["daily_rate"] == eq["daily_rate"].max()] # all rows equal to the max
 print(q6[["equipment_id", "equipment_name", "daily_rate"]].sort_values("equipment_id").rename_axis("row"))
 
 #7. Count equipment items in each category, including equipment that has never been rented. Display category and equipment count.
 print("\nQ7. Equipment count per category")
-q7 = eq.groupby("category")["equipment_id"].count().reset_index()
+q7 = eq.groupby("category")["equipment_id"].count().reset_index() # group equipment, not rentals
 print(q7.rename(columns={"equipment_id": "equipment_count"}).rename_axis("row"))
 
 #8. Count rental id values for rentals starting strictly after September 15, 2026.
