@@ -78,6 +78,10 @@ ren = ren.astype({"rental_id": int, "member_id": int, "equipment_id": int,
 print("3. Invalid numbers: Equipment =", e - len(eq), "| Members =", m - len(mem), "| Rentals =", r - len(ren))
 
 #4. Parse rental date 
+r = len(ren)
+ren["rental_date"] = pd.to_datetime(ren["rental_date"], format="%Y-%m-%d", errors="coerce")
+ren = ren.dropna()
+print("4. Invalid dates:   Equipment = 0 | Members = 0 | Rentals =", r - len(ren))
 
 #5. Remove rental rows whose member id or equipment id does not exist in the cleaned parent tables.
 
