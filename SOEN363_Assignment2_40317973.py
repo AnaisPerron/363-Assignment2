@@ -143,7 +143,9 @@ q1 = eq[eq["daily_rate"] > 40][["equipment_id", "equipment_name"]]
 print(q1.sort_values("equipment_id"))
 
 #2. Display member id and member name for members whose city is Montreal.
-
+print("\nQ2. Members whose city is Montreal")
+q2 = mem[mem["city"] == "Montreal"][["member_id", "member_name"]]
+print(q2.sort_values("member_id").rename_axis("row"))
 
 #3. Count the total number of members in the cleaned members table, including members with no rentals.
 
