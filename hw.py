@@ -2,7 +2,7 @@ import pandas as pd
 
 equip = pd.read_csv("equipment.csv")
 memb = pd.read_excel("members.xlsx")
-rent = pd.read_csv("rentals.txt", sep="\t")
+rent = pd.read_csv("rentals.txt", sep=",")
 
 
 print(equip.head())
