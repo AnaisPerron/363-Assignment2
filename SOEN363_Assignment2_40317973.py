@@ -71,7 +71,7 @@ for col in ["rental_id", "member_id", "equipment_id", "quantity", "rental_days"]
     ren = ren[(ren[col] > 0) & (ren[col] % 1 == 0)]
 
 # Store number columns as integers
-eq = eq.astype({"equipment_id": int, "stock_quantity": int})
+eq = eq.astype({"equipment_id": int, "stock_quantity": int, "daily_rate": float})
 mem = mem.astype({"member_id": int})
 ren = ren.astype({"rental_id": int, "member_id": int, "equipment_id": int,
                   "quantity": int, "rental_days": int})
@@ -84,7 +84,7 @@ ren = ren.dropna()
 print("4. Invalid dates:   Equipment = 0 | Members = 0 | Rentals =", r - len(ren))
 
 #5. Remove rental rows whose member id or equipment id does not exist in the cleaned parent tables.
-
+r = len(ren)
 ren = pd.merge(ren, mem[["member_id"]], on="member_id", how="inner")
 ren = pd.merge(ren, eq[["equipment_id"]], on="equipment_id", how="inner")
 print("5. Orphan rentals:  Equipment = 0 | Members = 0 | Rentals =", r - len(ren))
@@ -97,11 +97,6 @@ print("\nPrimary keys unique?")
 print("equipment_id:", len(eq["equipment_id"].drop_duplicates()) == len(eq))
 print("member_id:   ", len(mem["member_id"].drop_duplicates()) == len(mem))
 print("rental_id:   ", len(ren["rental_id"].drop_duplicates()) == len(ren))
-
-print("\nEffect on joins:")
-print("Every remaining rental matches exactly one member and one equipment item,")
-print("so joins on member_id and equipment_id lose no rentals, create no duplicate")
-print("rows, and revenue is never calculated from missing or invalid values.")
 
 # Join validation: join rentals to members and equipment, before and after cleaning
 raw_join = pd.merge(rent_df, memb_df, on="member_id", how="inner")
@@ -140,7 +135,7 @@ spending = spending.rename(columns={"revenue": "total_spending"})
 #1. List equipment id and equipment name for equipment with daily rate greater than CAD 40.
 print("\nQ1. Equipment with daily rate greater than CAD 40")
 expensive_equipment = eq[eq["daily_rate"] > 40][["equipment_id", "equipment_name"]] # filter, keep 2 columns
-print(expensive_equipment.sort_values("equipment_id")) # sort by id
+print(expensive_equipment.sort_values("equipment_id").rename_axis("row")) # sort by id
 
 #2. Display member id and member name for members whose city is Montreal.
 print("\nQ2. Members whose city is Montreal")
