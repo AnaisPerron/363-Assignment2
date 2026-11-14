@@ -229,9 +229,24 @@ monthly_rentals = ren_month.groupby("yearmonth")["rental_id"].count().reset_inde
 print(monthly_rentals.rename(columns={"rental_id": "rental_count"}).rename_axis("row"))
 
 #18. Label a rental High Value if its revenue exceeds CAD 500 OR both quantity is at least 4 and the member lives in Montreal. Otherwise label it Standard. List the unique member id and member name pairs with at least one High Value rental.
-
+print("\nQ18. Members with at least one High Value rental")
+full["label"] = "Standard"  # default label
+high = (full["revenue"] > 500) | ((full["quantity"] >= 4) & (full["city"] == "Montreal"))
+full.loc[high, "label"] = "High Value"  # relabel matching rentals
+high_value_members = full[full["label"] == "High Value"][["member_id", "member_name"]]
+print(high_value_members.drop_duplicates().sort_values("member_id").rename_axis("row"))  # unique members
 
 #19. Find the highest-spending member(s) in each city. Consider only members with at least one rental. Display city, member id, member name, and total spending; include ties and sort by city then member id.
-
+print("\nQ19. Highest-spending member(s) in each city")
+city_max = spending.groupby("city")["total_spending"].max().reset_index()  # max per city
+city_max = city_max.rename(columns={"total_spending": "city_max"})
+city_top_spenders = pd.merge(spending, city_max, on="city") # attach city max
+city_top_spenders = city_top_spenders[city_top_spenders["total_spending"] == city_top_spenders["city_max"]]  # keep the top spender
+city_top_spenders = city_top_spenders[["city", "member_id", "member_name", "total_spending"]].sort_values(["city", "member_id"])
+print(city_top_spenders.rename_axis("row"))
 
 #20. Identify member-equipment pairs appearing in more than one rental transaction. Display member id, equipment id, and rental count.
+print("\nQ20. Member-equipment pairs rented more than once")
+repeat_pairs = ren.groupby(["member_id", "equipment_id"])["rental_id"].count().reset_index()  # rentals per pair
+repeat_pairs = repeat_pairs.rename(columns={"rental_id": "rental_count"})
+print(repeat_pairs[repeat_pairs["rental_count"] > 1].sort_values(["member_id", "equipment_id"]).rename_axis("row"))
