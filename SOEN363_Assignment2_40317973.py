@@ -210,13 +210,23 @@ top_spenders = top_spenders[["member_id", "member_name", "total_spending"]].sort
 print(top_spenders.rename_axis("row"))
 
 #15. Find the city or cities with the largest number of rental transactions. Display city and rental count; use the member’s city.
-
+print("\nQ15. City or cities with the most rentals")
+city_rental_counts = full.groupby("city")["rental_id"].count().reset_index()  # rentals per member city
+city_rental_counts = city_rental_counts.rename(columns={"rental_id": "rental_count"})
+print(city_rental_counts[city_rental_counts["rental_count"] == city_rental_counts["rental_count"].max()].rename_axis("row"))
 
 #16. List equipment id and equipment name for Camping equipment that has never been rented.
-
+print("\nQ16. Camping equipment that has never been rented")
+unrented_camping = pd.merge(eq[eq["category"] == "Camping"], ren, on="equipment_id", how="left")  # left join
+unrented_camping = unrented_camping[unrented_camping["rental_id"].isna()]  # no matching rental
+print(unrented_camping[["equipment_id", "equipment_name"]].sort_values("equipment_id").rename_axis("row"))
 
 #17. Count the number of rental transactions starting in each month. Display the yearmonth and rental count, sorted chronologically.
-
+print("\nQ17. Rentals per month")
+ren_month = ren.copy()
+ren_month["yearmonth"] = ren_month["rental_date"].apply(lambda d: d.strftime("%Y-%m"))  # For example: 2026-09
+monthly_rentals = ren_month.groupby("yearmonth")["rental_id"].count().reset_index()  # sorted by month
+print(monthly_rentals.rename(columns={"rental_id": "rental_count"}).rename_axis("row"))
 
 #18. Label a rental High Value if its revenue exceeds CAD 500 OR both quantity is at least 4 and the member lives in Montreal. Otherwise label it Standard. List the unique member id and member name pairs with at least one High Value rental.
 
