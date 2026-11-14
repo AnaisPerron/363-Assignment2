@@ -41,6 +41,12 @@ print("1. Missing values:  Equipment =", e - len(eq), "| Members =", m - len(mem
 
 #2. Remove exact duplicate rows, retaining the first occurrence. Do not deduplicate on member id and equipment id: repeat rentals are valid
 
+e, m, r = len(eq), len(mem), len(ren)
+eq = eq.drop_duplicates()
+mem = mem.drop_duplicates()
+ren = ren.drop_duplicates()
+print("2. Duplicates:      Equipment =", e - len(eq), "| Members =", m - len(mem), "| Rentals =", r - len(ren))
+
 #3. Validate numeric values.
 
 #4. Parse rental date 
