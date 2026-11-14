@@ -148,13 +148,16 @@ q2 = mem[mem["city"] == "Montreal"][["member_id", "member_name"]]
 print(q2.sort_values("member_id").rename_axis("row"))
 
 #3. Count the total number of members in the cleaned members table, including members with no rentals.
-
+print("\nQ3. Total number of members")
+print(mem["member_id"].count())
 
 #4. Count the rental id values for rentals with quantity greater than 5.
-
+print("\nQ4. Rentals with quantity greater than 5")
+print(ren[ren["quantity"] > 5]["rental_id"].count())
 
 #5. Calculate the average daily rate across all cleaned equipment records.
-
+print("\nQ5. Average daily rate")
+print(f"{eq['daily_rate'].mean():.2f}")
 
 #6. Find the equipment item(s) with the highest daily rate. Display equipment id, equipment name, and daily rate.
 
