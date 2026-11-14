@@ -1,5 +1,5 @@
 import pandas as pd
-# ==================================Task 1: Data loading==================================
+print("\n =================================================Task 1: Data loading=================================================\n")
 
 #load files
 equip_df = pd.read_csv("equipment.csv")
@@ -26,14 +26,18 @@ print("\nRentals:")
 rent_df.info()
 
 
-# ==================================Task 2: Data cleaning==================================
+print("\n =================================================Task 2: Data Cleaning=================================================\n")
 # Create copies
 eq = equip_df.copy()
 mem = memb_df.copy()
 ren = rent_df.copy()
 
 #1. Remove rows with any missing value. All columns are required for this exercise.
-
+e, m, r = len(eq), len(mem), len(ren)
+eq = eq.dropna()
+mem = mem.dropna()
+ren = ren.dropna()
+print("1. Missing values:  Equipment =", e - len(eq), "| Members =", m - len(mem), "| Rentals =", r - len(ren))
 
 #2. Remove exact duplicate rows, retaining the first occurrence. Do not deduplicate on member id and equipment id: repeat rentals are valid
 
