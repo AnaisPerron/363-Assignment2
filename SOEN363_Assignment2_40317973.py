@@ -120,3 +120,78 @@ print("so the joined row count is wrong. After cleaning, every rental matches ex
 print("one member and one equipment item, so joins on member_id and equipment_id keep")
 print("each rental exactly once, and revenue is never calculated from missing or")
 print("invalid values.")
+
+
+print("\n =================================================Task 3: Data Cleaning=================================================\n")
+
+# Show money with two decimal places
+pd.set_option("display.float_format", "{:.2f}".format)
+
+# Shared joined table: each rental with its member and equipment details
+full = pd.merge(ren, mem, on="member_id", how="inner")
+full = pd.merge(full, eq, on="equipment_id", how="inner")
+full["revenue"] = full["quantity"] * full["rental_days"] * full["daily_rate"]
+
+# Total spending per member (only members with rentals)
+spending = full.groupby(["member_id", "member_name", "city"])["revenue"].sum().reset_index()
+spending = spending.rename(columns={"revenue": "total_spending"})
+
+
+#1. List equipment id and equipment name for equipment with daily rate greater than CAD 40.
+
+
+#2. Display member id and member name for members whose city is Montreal.
+
+
+#3. Count the total number of members in the cleaned members table, including members with no rentals.
+
+
+#4. Count the rental id values for rentals with quantity greater than 5.
+
+
+#5. Calculate the average daily rate across all cleaned equipment records.
+
+
+#6. Find the equipment item(s) with the highest daily rate. Display equipment id, equipment name, and daily rate.
+
+
+#7. Count equipment items in each category, including equipment that has never been rented. Display category and equipment count.
+
+
+#8. Count rental id values for rentals starting strictly after September 15, 2026.
+
+
+#9. Calculate total rental revenue for rentals with rental days greater than 3.
+
+
+#10. Find Halifax members who rented at least 4 units in a single rental. Display member id and member name.
+
+
+#11. Find Montreal members with at least one rental starting in September 2026. Displaymember id and member name.
+
+
+#12. Find Ottawa members with more than two rental transactions. Display member id,member name, and rental count.
+
+
+#13. Find the top three equipment items by total units rented, using sum(quantity), not number of transactions. Display equipment id, equipment name, and total units. Return exactly three rows using equipment id ascending to break ties.
+
+
+#14. Find the member(s) with the highest total rental spending. Display member id, member name, and total spending.
+
+
+#15. Find the city or cities with the largest number of rental transactions. Display city and rental count; use the member’s city.
+
+
+#16. List equipment id and equipment name for Camping equipment that has never been rented.
+
+
+#17. Count the number of rental transactions starting in each month. Display the yearmonth and rental count, sorted chronologically.
+
+
+#18. Label a rental High Value if its revenue exceeds CAD 500 OR both quantity is at least 4 and the member lives in Montreal. Otherwise label it Standard. List the unique member id and member name pairs with at least one High Value rental.
+
+
+#19. Find the highest-spending member(s) in each city. Consider only members with at least one rental. Display city, member id, member name, and total spending; include ties and sort by city then member id.
+
+
+#20. Identify member-equipment pairs appearing in more than one rental transaction. Display member id, equipment id, and rental count.
