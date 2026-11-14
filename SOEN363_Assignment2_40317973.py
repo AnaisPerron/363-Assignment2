@@ -160,10 +160,14 @@ print("\nQ5. Average daily rate")
 print(f"{eq['daily_rate'].mean():.2f}")
 
 #6. Find the equipment item(s) with the highest daily rate. Display equipment id, equipment name, and daily rate.
-
+print("\nQ6. Equipment with the highest daily rate")
+q6 = eq[eq["daily_rate"] == eq["daily_rate"].max()]
+print(q6[["equipment_id", "equipment_name", "daily_rate"]].sort_values("equipment_id").rename_axis("row"))
 
 #7. Count equipment items in each category, including equipment that has never been rented. Display category and equipment count.
-
+print("\nQ7. Equipment count per category")
+q7 = eq.groupby("category")["equipment_id"].count().reset_index()
+print(q7.rename(columns={"equipment_id": "equipment_count"}).rename_axis("row"))
 
 #8. Count rental id values for rentals starting strictly after September 15, 2026.
 
