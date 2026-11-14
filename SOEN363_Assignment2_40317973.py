@@ -85,6 +85,38 @@ print("4. Invalid dates:   Equipment = 0 | Members = 0 | Rentals =", r - len(ren
 
 #5. Remove rental rows whose member id or equipment id does not exist in the cleaned parent tables.
 
+ren = pd.merge(ren, mem[["member_id"]], on="member_id", how="inner")
+ren = pd.merge(ren, eq[["equipment_id"]], on="equipment_id", how="inner")
+print("5. Orphan rentals:  Equipment = 0 | Members = 0 | Rentals =", r - len(ren))
+
 #6. Report final row counts, demonstrate that retained primary keys are unique, and briefly explain the effect of cleaning on subsequent joins
 
+print("Final rows:         Equipment =", len(eq), "| Members =", len(mem), "| Rentals =", len(ren))
 
+print("\nPrimary keys unique?")
+print("equipment_id:", len(eq["equipment_id"].drop_duplicates()) == len(eq))
+print("member_id:   ", len(mem["member_id"].drop_duplicates()) == len(mem))
+print("rental_id:   ", len(ren["rental_id"].drop_duplicates()) == len(ren))
+
+print("\nEffect on joins:")
+print("Every remaining rental matches exactly one member and one equipment item,")
+print("so joins on member_id and equipment_id lose no rentals, create no duplicate")
+print("rows, and revenue is never calculated from missing or invalid values.")
+
+# Join validation: join rentals to members and equipment, before and after cleaning
+raw_join = pd.merge(rent_df, memb_df, on="member_id", how="inner")
+raw_join = pd.merge(raw_join, equip_df, on="equipment_id", how="inner")
+clean_join = pd.merge(ren, mem, on="member_id", how="inner")
+clean_join = pd.merge(clean_join, eq, on="equipment_id", how="inner")
+
+print("\nJoin validation (rentals + members + equipment):")
+print("Before cleaning: rentals =", len(rent_df), "| joined rows =", len(raw_join))
+print("After cleaning:  rentals =", len(ren), "| joined rows =", len(clean_join))
+print("Every clean rental joined once:", len(clean_join) == len(ren))
+
+print("\nEffect on joins:")
+print("Before cleaning, duplicate parent keys repeat rentals and orphan ids drop them,")
+print("so the joined row count is wrong. After cleaning, every rental matches exactly")
+print("one member and one equipment item, so joins on member_id and equipment_id keep")
+print("each rental exactly once, and revenue is never calculated from missing or")
+print("invalid values.")
