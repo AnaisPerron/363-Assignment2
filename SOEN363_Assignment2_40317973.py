@@ -122,7 +122,7 @@ print("each rental exactly once, and revenue is never calculated from missing or
 print("invalid values.")
 
 
-print("\n =================================================Task 3: Data Cleaning=================================================\n")
+print("\n =================================================Task 3: Pandas queries================================================\n")
 
 # Show money with two decimal places
 pd.set_option("display.float_format", "{:.2f}".format)
