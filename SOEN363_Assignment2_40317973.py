@@ -9,13 +9,13 @@ rent_df = pd.read_csv("rentals.txt", sep=",")
 print("\n-----------Display of the first five rows of each DataFrame-----------\n")
 
 print("\nEquipment:\n")
-print(equip_df.head())
+print(equip_df.head().to_string(index=False))
 
 print("\nMembers:\n")
-print(memb_df.head())
+print(memb_df.head().to_string(index=False))
 
 print("\nRentals:\n")
-print(rent_df.head())
+print(rent_df.head().to_string(index=False))
 
 print("\n-----------DataFrames' column names, non-null counts, and data types-----------\n")
 print("\nEquipment:")
@@ -135,12 +135,12 @@ spending = spending.rename(columns={"revenue": "total_spending"})
 #1. List equipment id and equipment name for equipment with daily rate greater than CAD 40.
 print("\nQ1. Equipment with daily rate greater than CAD 40")
 expensive_equipment = eq[eq["daily_rate"] > 40][["equipment_id", "equipment_name"]] # filter, keep 2 columns
-print(expensive_equipment.sort_values("equipment_id").rename_axis("row")) # sort by id
+print(expensive_equipment.sort_values("equipment_id").to_string(index=False)) # sort by id
 
 #2. Display member id and member name for members whose city is Montreal.
 print("\nQ2. Members whose city is Montreal")
 montreal_members = mem[mem["city"] == "Montreal"][["member_id", "member_name"]] # filter by city
-print(montreal_members.sort_values("member_id").rename_axis("row"))  # sort by id
+print(montreal_members.sort_values("member_id").to_string(index=False))  # sort by id
 
 #3. Count the total number of members in the cleaned members table, including members with no rentals.
 print("\nQ3. Total number of members")
@@ -157,12 +157,12 @@ print(f"{eq['daily_rate'].mean():.2f}") # mean, rounded to 2 decimals
 #6. Find the equipment item(s) with the highest daily rate. Display equipment id, equipment name, and daily rate.
 print("\nQ6. Equipment with the highest daily rate")
 top_rate_equipment = eq[eq["daily_rate"] == eq["daily_rate"].max()] # all rows equal to the max
-print(top_rate_equipment[["equipment_id", "equipment_name", "daily_rate"]].sort_values("equipment_id").rename_axis("row"))
+print(top_rate_equipment[["equipment_id", "equipment_name", "daily_rate"]].sort_values("equipment_id").to_string(index=False))
 
 #7. Count equipment items in each category, including equipment that has never been rented. Display category and equipment count.
 print("\nQ7. Equipment count per category")
 category_counts = eq.groupby("category")["equipment_id"].count().reset_index() # group equipment, not rentals
-print(category_counts.rename(columns={"equipment_id": "equipment_count"}).rename_axis("row"))
+print(category_counts.rename(columns={"equipment_id": "equipment_count"}).to_string(index=False))
 
 #8. Count rental id values for rentals starting strictly after September 15, 2026.
 print("\nQ8. Rentals starting after September 15, 2026")
@@ -177,51 +177,51 @@ print(f"{full[full['rental_days'] > 3]['revenue'].sum():.2f}")  # filter, then s
 
 print("\nQ10. Halifax members who rented at least 4 units in one rental")
 halifax_big_renters = full[(full["city"] == "Halifax") & (full["quantity"] >= 4)]  # both conditions
-print(halifax_big_renters[["member_id", "member_name"]].drop_duplicates().sort_values("member_id").rename_axis("row"))
+print(halifax_big_renters[["member_id", "member_name"]].drop_duplicates().sort_values("member_id").to_string(index=False))
 
 #11. Find Montreal members with at least one rental starting in September 2026. Displaymember id and member name.
 print("\nQ11. Montreal members with a rental in September 2026")
 montreal_sept_members = full[(full["city"] == "Montreal")
            & (full["rental_date"] >= "2026-09-01") & (full["rental_date"] <= "2026-09-30")]  # date range
-print(montreal_sept_members[["member_id", "member_name"]].drop_duplicates().sort_values("member_id").rename_axis("row"))
+print(montreal_sept_members[["member_id", "member_name"]].drop_duplicates().sort_values("member_id").to_string(index=False))
 
 
 #12. Find Ottawa members with more than two rental transactions. Display member id,member name, and rental count.
 print("\nQ12. Ottawa members with more than two rentals")
 ottawa_rental_counts = full[full["city"] == "Ottawa"].groupby(["member_id", "member_name"])["rental_id"].count().reset_index()
 ottawa_rental_counts = ottawa_rental_counts.rename(columns={"rental_id": "rental_count"})
-print(ottawa_rental_counts[ottawa_rental_counts["rental_count"] > 2].sort_values("member_id").rename_axis("row"))  # keep counts > 2
+print(ottawa_rental_counts[ottawa_rental_counts["rental_count"] > 2].sort_values("member_id").to_string(index=False))  # keep counts > 2
 
 #13. Find the top three equipment items by total units rented, using sum(quantity), not number of transactions. Display equipment id, equipment name, and total units. Return exactly three rows using equipment id ascending to break ties.
 print("\nQ13. Top three equipment items by total units rented")
 units_per_equipment = full.groupby(["equipment_id", "equipment_name"])["quantity"].sum().reset_index()  # units per item
 units_per_equipment = units_per_equipment.rename(columns={"quantity": "total_units"})
-print(units_per_equipment.sort_values(["total_units", "equipment_id"], ascending=[False, True]).head(3).rename_axis("row"))
+print(units_per_equipment.sort_values(["total_units", "equipment_id"], ascending=[False, True]).head(3).to_string(index=False))
 
 #14. Find the member(s) with the highest total rental spending. Display member id, member name, and total spending.
 print("\nQ14. Member(s) with the highest total spending")
 top_spenders = spending[spending["total_spending"] == spending["total_spending"].max()]  # all rows equal to the max
 top_spenders = top_spenders[["member_id", "member_name", "total_spending"]].sort_values("member_id")
-print(top_spenders.rename_axis("row"))
+print(top_spenders.to_string(index=False))
 
 #15. Find the city or cities with the largest number of rental transactions. Display city and rental count; use the member’s city.
 print("\nQ15. City or cities with the most rentals")
 city_rental_counts = full.groupby("city")["rental_id"].count().reset_index()  # rentals per member city
 city_rental_counts = city_rental_counts.rename(columns={"rental_id": "rental_count"})
-print(city_rental_counts[city_rental_counts["rental_count"] == city_rental_counts["rental_count"].max()].rename_axis("row"))
+print(city_rental_counts[city_rental_counts["rental_count"] == city_rental_counts["rental_count"].max()].to_string(index=False))
 
 #16. List equipment id and equipment name for Camping equipment that has never been rented.
 print("\nQ16. Camping equipment that has never been rented")
 unrented_camping = pd.merge(eq[eq["category"] == "Camping"], ren, on="equipment_id", how="left")  # left join
 unrented_camping = unrented_camping[unrented_camping["rental_id"].isna()]  # no matching rental
-print(unrented_camping[["equipment_id", "equipment_name"]].sort_values("equipment_id").rename_axis("row"))
+print(unrented_camping[["equipment_id", "equipment_name"]].sort_values("equipment_id").to_string(index=False))
 
 #17. Count the number of rental transactions starting in each month. Display the yearmonth and rental count, sorted chronologically.
 print("\nQ17. Rentals per month")
 ren_month = ren.copy()
 ren_month["yearmonth"] = ren_month["rental_date"].apply(lambda d: d.strftime("%Y-%m"))  # For example: 2026-09
 monthly_rentals = ren_month.groupby("yearmonth")["rental_id"].count().reset_index()  # sorted by month
-print(monthly_rentals.rename(columns={"rental_id": "rental_count"}).rename_axis("row"))
+print(monthly_rentals.rename(columns={"rental_id": "rental_count"}).to_string(index=False))
 
 #18. Label a rental High Value if its revenue exceeds CAD 500 OR both quantity is at least 4 and the member lives in Montreal. Otherwise label it Standard. List the unique member id and member name pairs with at least one High Value rental.
 print("\nQ18. Members with at least one High Value rental")
@@ -229,7 +229,7 @@ full["label"] = "Standard"  # default label
 high = (full["revenue"] > 500) | ((full["quantity"] >= 4) & (full["city"] == "Montreal"))
 full.loc[high, "label"] = "High Value"  # relabel matching rentals
 high_value_members = full[full["label"] == "High Value"][["member_id", "member_name"]]
-print(high_value_members.drop_duplicates().sort_values("member_id").rename_axis("row"))  # unique members
+print(high_value_members.drop_duplicates().sort_values("member_id").to_string(index=False))  # unique members
 
 #19. Find the highest-spending member(s) in each city. Consider only members with at least one rental. Display city, member id, member name, and total spending; include ties and sort by city then member id.
 print("\nQ19. Highest-spending member(s) in each city")
@@ -238,10 +238,10 @@ city_max = city_max.rename(columns={"total_spending": "city_max"})
 city_top_spenders = pd.merge(spending, city_max, on="city") # attach city max
 city_top_spenders = city_top_spenders[city_top_spenders["total_spending"] == city_top_spenders["city_max"]]  # keep the top spender
 city_top_spenders = city_top_spenders[["city", "member_id", "member_name", "total_spending"]].sort_values(["city", "member_id"])
-print(city_top_spenders.rename_axis("row"))
+print(city_top_spenders.to_string(index=False))
 
 #20. Identify member-equipment pairs appearing in more than one rental transaction. Display member id, equipment id, and rental count.
 print("\nQ20. Member-equipment pairs rented more than once")
 repeat_pairs = ren.groupby(["member_id", "equipment_id"])["rental_id"].count().reset_index()  # rentals per pair
 repeat_pairs = repeat_pairs.rename(columns={"rental_id": "rental_count"})
-print(repeat_pairs[repeat_pairs["rental_count"] > 1].sort_values(["member_id", "equipment_id"]).rename_axis("row"))
+print(repeat_pairs[repeat_pairs["rental_count"] > 1].sort_values(["member_id", "equipment_id"]).to_string(index=False))
